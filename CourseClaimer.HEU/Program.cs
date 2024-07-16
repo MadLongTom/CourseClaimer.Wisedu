@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
+builder.Services.AddResponseCompression();
 builder.Services.AddBootstrapBlazor();
 
 // 增加 SignalR 服务数据传输大小限制配置
