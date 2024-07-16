@@ -1,0 +1,49 @@
+﻿@page "/table"
+@using CourseClaimer.HEU.Shared.Models.Database
+@using CourseClaimer.HEU.Shared.Services
+@inject EntityManagementService EMS
+@attribute [TabItemOption(Text = "Table")]
+<PageTitle>Table</PageTitle>
+
+<h1>Table - 固定标签页</h1>
+
+<Table TItem="Customer" IsPagination="true" PageItemsSource="[10,20,40]" class="table-demo"
+       IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="true"
+       ShowToolbar="true" ShowSearch="true" ShowExtendButtons="true"
+       AutoGenerateColumns="true" EditMode="EditMode.Popup" OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync">
+</Table>
+
+@code
+{
+    public async Task<QueryData<Customer>> OnQueryAsync(QueryPageOptions options)
+    {
+        var customers = await EMS.QueryUser(options.PageIndex, options.PageItems);
+        return new QueryData<Customer>
+        {
+            Items = customers.Data,
+            TotalCount = customers.Total
+        };
+    }
+    public async Task<bool> OnSaveAsync(Customer customer,ItemChangedType type)
+    {
+        if(type == ItemChangedType.Update)
+        {
+            await EMS.EditCustomer(customer.UserName,customer.Password,customer.Categories,customer.Course,customer.IsFinished);
+            return true;
+        }
+        else if (type == ItemChangedType.Add)
+        {
+            await EMS.AddCustomer(customer.UserName, customer.Password, customer.Categories, customer.Course, customer.IsFinished);
+            return true;
+        }
+        return false;
+    }
+    public async Task<bool> OnDeleteAsync(IEnumerable<Customer> customers)
+    {
+        foreach (var customer in customers)
+        {
+            await EMS.DeleteCustomer(customer.UserName);
+        }
+        return true;
+    }
+}
