@@ -22,7 +22,7 @@ namespace CourseClaimer.HEU.Shared.Services
             {
                 IsSuccess = success,
                 UserName = entity.username,
-                Course = @class.KCM + @class.KCLB,
+                Course = @class.KCM + @class.XGXKLB,
             });
             await dbContext.SaveChangesAsync();
         }
@@ -32,14 +32,14 @@ namespace CourseClaimer.HEU.Shared.Services
             if (!res.IsSuccess) return [];
             var availableRows = res.Data.data.rows.Where(q => q.classCapacity > q.numberOfSelected);
             if (availableRows.Count() != 0)
-                logger.LogInformation($"List:{entity.username} found available course {string.Join('|', availableRows.Select(c => c.KCM))}");
+                logger.LogInformation($"AvailableList:{entity.username} found available course {string.Join('|', availableRows.Select(c => c.KCM))}");
             return availableRows.ToList();
         }
 
         public async Task<List<Row>> GetAllList(Entity entity)
         {
             var res = await entity.GetRowList().ToResponseDto<ListRoot>();
-            logger.LogInformation($"List:{entity.username} found available course {string.Join('|', res.Data.data.rows.Select(c => c.KCM))}");
+            logger.LogInformation($"AllList:{entity.username} found available course {string.Join('|', res.Data.data.rows.Select(c => c.KCM))}");
             return res.IsSuccess ? res.Data.data.rows.ToList() : [];
         }
 
@@ -50,7 +50,7 @@ namespace CourseClaimer.HEU.Shared.Services
             {
                 if (res.InnerCode == HttpStatusCode.OK)
                 {
-                    logger.LogInformation($"Add:{entity.username} has claimed {@class.KCM}({@class.KCLB})");
+                    logger.LogInformation($"Add:{entity.username} has claimed {@class.KCM}({@class.XGXKLB})");
                     entity.done.Add(@class);
                     return AddResult.Success;
                 }
@@ -61,7 +61,13 @@ namespace CourseClaimer.HEU.Shared.Services
                 if (res.InnerMessage.Contains("选课结果中") || res.InnerMessage.Contains("不能重复选课") ||
                     res.InnerMessage.Contains("冲突")) return AddResult.Conflict;
                 if (res.InnerMessage.Contains("请重新登录")) return AddResult.AuthorizationExpired;
-                logger.LogWarning($"Add:{entity.username} when claiming {@class.KCM}, server reported{Environment.NewLine}{res.InnerMessage}");
+                logger.LogWarning($"Add:{entity.username} when claiming {@class.KCM}, server reported {res.InnerMessage}");
+                dbContext.EntityRecords.Add(new EntityRecord()
+                {
+                    UserName = entity.username,
+                    Message = $"Add:{entity.username} when claiming {@class.KCM}, server reported {res.InnerMessage}"
+                });
+                await dbContext.SaveChangesAsync();
                 return AddResult.UnknownError;
             }
             return AddResult.UnknownError;
@@ -178,6 +184,7 @@ namespace CourseClaimer.HEU.Shared.Services
                 privateList = publicList;
             }
             privateList.RemoveAll(q => entity.done.Any(p => p.KCH == q.KCH));
+            logger.LogInformation($"PrivateList:{entity.username} found available course {string.Join('|', privateList.Select(c => c.KCM))}");
             return privateList;
         }
 

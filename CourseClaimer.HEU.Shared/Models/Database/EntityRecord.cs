@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace CourseClaimer.HEU.Shared.Models.Database
 {
-    public class Customer
+    public class EntityRecord
     {
-        [Key] 
+        [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
+        public DateTime Time { get; set; } = DateTime.Now;
         public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Categories { get; set; } = string.Empty;
-        public string Course { get; set; } = string.Empty;
-        public bool IsFinished { get; set; }
+        public string Message { get; set; }
     }
 }

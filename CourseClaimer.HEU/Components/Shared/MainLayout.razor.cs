@@ -8,7 +8,7 @@ namespace CourseClaimer.HEU.Components.Shared
     /// </summary>
     public sealed partial class MainLayout
     {
-        private bool UseTabSet { get; set; } = true;
+        private bool UseTabSet { get; set; } = false;
 
         private string Theme { get; set; } = "";
 
@@ -18,7 +18,7 @@ namespace CourseClaimer.HEU.Components.Shared
 
         private bool IsFixedFooter { get; set; } = true;
 
-        private bool IsFullSide { get; set; } = true;
+        private bool IsFullSide { get; set; } = false;
 
         private bool ShowFooter { get; set; } = true;
 
@@ -39,8 +39,9 @@ namespace CourseClaimer.HEU.Components.Shared
             var menus = new List<MenuItem>
             {
                 new() { Text = "Index", Icon = "fa-solid fa-fw fa-flag", Url = "/" , Match = NavLinkMatch.All},
-                new() { Text = "Record", Icon = "fa-solid fa-fw fa-check-square", Url = "/tableRecord" },
-                new() { Text = "Table", Icon = "fa-solid fa-fw fa-table", Url = "/table" }
+                new() { Text = "添加账号", Icon = "fa-solid fa-fw fa-table", Url = "/table" },
+                new() { Text = "选课记录", Icon = "fa-solid fa-fw fa-check-square", Url = "/tableRecord" },
+                new() { Text = "账号日志", Icon = "fa-solid fa-fw fa-check-square", Url = "/tableEntity" }
             };
 
             return menus;

@@ -20,4 +20,5 @@ public class ClaimDbContext : DbContext
 
     public DbSet<Customer> Customers { get; set; }
     public DbSet<ClaimRecord> ClaimRecords { get; set; }
+    public DbSet<EntityRecord> EntityRecords { get; set; }
 }

@@ -6,25 +6,16 @@
             TabDefaultUrl="/"
             Menus="@Menus" UseTabSet="@UseTabSet" AdditionalAssemblies="new[] { GetType().Assembly }" class="@Theme">
         <Header>
-            <span class="ms-3 flex-sm-fill d-none d-sm-block">Bootstrap of Blazor</span>
+            <span class="ms-3 flex-sm-fill d-none d-sm-block">CourseClaimer.HEU</span>
             <div class="flex-fill d-sm-none">
             </div>
-            <Widget></Widget>
-            <Logout ImageUrl="images/Argo-C.png" DisplayName="超级管理员" UserName="Admin">
-                <LinkTemplate>
-                    <a href="#"><i class="fa-solid fa-suitcase"></i>个人中心</a>
-                    <a href="#"><i class="fa-solid fa-cog"></i>设置</a>
-                    <a href="#"><i class="fa-solid fa-bell"></i>通知<span class="badge badge-pill badge-success"></span></a>
-                    <LogoutLink />
-                </LinkTemplate>
-            </Logout>
             <div class="layout-drawer" @onclick="@(e => IsOpen = !IsOpen)"><i class="fa fa-gears"></i></div>
         </Header>
         <Side>
             <div class="layout-banner">
                 <img class="layout-logo" src="favicon.png" />
                 <div class="layout-title">
-                    <span>后台管理</span>
+                    <span>Blazor</span>
                 </div>
             </div>
         </Side>
@@ -35,7 +26,7 @@
         </Main>
         <Footer>
             <div class="text-center flex-fill">
-                <a class="page-layout-demo-footer-link" href="https://gitee.com/LongbowEnterprise/BootstrapAdmin" target="_blank">Bootstrap Admin</a>
+                <a class="page-layout-demo-footer-link" href="https://github.com/MadLongTom/CourseClaimer.HEU" target="_blank">CourseClaimer.HEU</a>
             </div>
         </Footer>
         <NotFound>

@@ -3,6 +3,7 @@ using System;
 using CourseClaimer.HEU.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseClaimer.HEU.Shared.Migrations
 {
     [DbContext(typeof(ClaimDbContext))]
-    partial class ClaimDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240717042500_EntityRecord")]
+    partial class EntityRecord
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -80,9 +83,6 @@ namespace CourseClaimer.HEU.Shared.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Time")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserName")

@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using CourseClaimer.HEU.Shared.Dto;
 
 namespace CourseClaimer.HEU.Shared.Extensions
 {
     public static class EntityExtensions
     {
-        private const int LimitMillSeconds = 350;
+        private const int LimitMillSeconds = 250;
 
         public static HttpRequestMessage BuildPostRequest(string url, Entity entity, MediaTypeHeaderValue? contentType, HttpContent content)
         {

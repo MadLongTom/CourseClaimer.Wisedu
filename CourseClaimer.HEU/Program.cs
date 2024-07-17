@@ -51,6 +51,8 @@ if (!app.Environment.IsDevelopment())
 
 app.Services.CreateScope().ServiceProvider.GetRequiredService<ClaimDbContext>().Database.Migrate();
 
+_ = app.Services.CreateScope().ServiceProvider.GetRequiredService<EntityManagementService>().StartAsync(CancellationToken.None);
+
 app.UseStaticFiles();
 
 app.UseAntiforgery();

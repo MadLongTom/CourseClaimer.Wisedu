@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\API\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

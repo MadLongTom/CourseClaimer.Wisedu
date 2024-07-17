@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CourseClaimer.HEU.Shared.Dto;
+using CourseClaimer.HEU.Shared.Enums;
 using CourseClaimer.HEU.Shared.Models.Database;
 using CourseClaimer.HEU.Shared.Models.Runtime;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,17 @@ namespace CourseClaimer.HEU.Shared.Services
                 Data = data
             };
         }
+        public async Task<QueryDto<EntityRecord>> QueryEntity(int page, int pageSize)
+        {
+            var query = dbContext.EntityRecords.AsQueryable();
+            var total = await query.CountAsync();
+            var data = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new QueryDto<EntityRecord>
+            {
+                Total = total,
+                Data = data
+            };
+        }
         public async Task EditCustomer(string userName, string password, string categories, string course, bool isFinished)
         {
             var customer = await dbContext.Customers.FirstAsync(c => c.UserName == userName);
@@ -82,7 +94,25 @@ namespace CourseClaimer.HEU.Shared.Services
                     var entity = new Entity(customer.UserName, customer.Password, customer.Categories == string.Empty ? [] : customer.Categories.Split(',').ToList(), customer.Course == string.Empty ? [] : customer.Course.Split(',').ToList(), [],false,null);
                     var claimService = serviceProvider.GetRequiredService<ClaimService>();
                     var cts = new CancellationTokenSource();
-                    await authorizeService.MakeUserLogin(entity);
+                    LoginResult loginResult;
+                    do
+                    {
+                        loginResult = await authorizeService.MakeUserLogin(entity);
+                    } while (loginResult == LoginResult.WrongCaptcha);
+
+                    if (loginResult == LoginResult.WrongPassword)
+                    {
+                        logger.LogError($"Login:{entity.username}: Wrong Password");
+                        dbContext.EntityRecords.Add(new EntityRecord()
+                        {
+                            UserName = customer.UserName,
+                            Message = "Wrong Password"
+                        });
+                        dbContext.Customers.Remove(customer);
+                        await dbContext.SaveChangesAsync();
+                        return;
+                    }
+                    
                     var task = claimService.GetPrivateList(await claimService.GetAllList(entity), entity).Count > 2 ? claimService.QueryClaim(entity,cts.Token) : claimService.DirectClaim(entity, cts.Token);
                     WorkInfos.Add(new WorkInfo
                     {

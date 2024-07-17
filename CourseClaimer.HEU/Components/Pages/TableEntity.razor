@@ -1,9 +1,9 @@
-﻿@page "/tableRecord"
+﻿@page "/tableEntity"
 @using CourseClaimer.HEU.Shared.Models.Database
 @using CourseClaimer.HEU.Shared.Services
 @inject EntityManagementService EMS
 
-<Table TItem="ClaimRecord" IsPagination="true" PageItemsSource="[10,20,40]" class="table-demo"
+<Table TItem="EntityRecord" IsPagination="true" PageItemsSource="[10,20,40]" class="table-demo"
        IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="true"
        ShowToolbar="true" ShowSearch="true" ShowExtendButtons="true"
        AutoGenerateColumns="true" EditMode="EditMode.Popup" OnQueryAsync="OnQueryAsync">
@@ -11,10 +11,10 @@
 
 @code
 {
-    public async Task<QueryData<ClaimRecord>> OnQueryAsync(QueryPageOptions options)
+    public async Task<QueryData<EntityRecord>> OnQueryAsync(QueryPageOptions options)
     {
-        var customers = await EMS.QueryRecord(options.PageIndex, options.PageItems);
-        return new QueryData<ClaimRecord>
+        var customers = await EMS.QueryEntity(options.PageIndex, options.PageItems);
+        return new QueryData<EntityRecord>
         {
             Items = customers.Data,
             TotalCount = customers.Total
