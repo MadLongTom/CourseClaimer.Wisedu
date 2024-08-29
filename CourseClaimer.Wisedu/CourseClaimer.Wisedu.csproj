@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>adbff6f2-0df9-49fc-bd0f-f8f4aadeb388</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <ContainerRuntimeIdentifier>win-x64</ContainerRuntimeIdentifier>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:8.0-windowsservercore-ltsc2019</ContainerBaseImage>
+    <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Locales\en.json" />
+    <Content Remove="Locales\zh.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Locales\en.json" />
+    <EmbeddedResource Include="Locales\zh.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BootstrapBlazor" Version="8.*" />
+    <PackageReference Include="BootstrapBlazor.FontAwesome" Version="8.*" />
+    <PackageReference Include="DotNetCore.CAP" Version="8.2.0" />
+    <PackageReference Include="DotNetCore.CAP.Dashboard" Version="8.2.0" />
+    <PackageReference Include="DotNetCore.CAP.InMemoryStorage" Version="8.2.0" />
+    <PackageReference Include="DotNetCore.CAP.PostgreSql" Version="8.2.0" />
+    <PackageReference Include="DotNetCore.CAP.Sqlite" Version="8.0.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.7.0" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.18.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.9.0-beta.2" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
+    <PackageReference Include="Quartz" Version="3.11.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.11.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.11.0" />
+    <PackageReference Include="Savorboard.CAP.InMemoryMessageQueue" Version="8.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CourseClaimer.Ocr\CourseClaimer.Ocr.csproj" />
+    <ProjectReference Include="..\CourseClaimer.Wisedu.EntityFramework.PostgreSQL\CourseClaimer.Wisedu.EntityFramework.PostgreSQL.csproj" />
+    <ProjectReference Include="..\CourseClaimer.Wisedu.EntityFramework.SQLite\CourseClaimer.Wisedu.EntityFramework.SQLite.csproj" />
+    <ProjectReference Include="..\CourseClaimer.Wisedu.EntityFramework.SQLServer\CourseClaimer.Wisedu.EntityFramework.SQLServer.csproj" />
+    <ProjectReference Include="..\CourseClaimer.Wisedu.Shared\CourseClaimer.Wisedu.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ContainerPort Include="8081" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,11 @@
+﻿@page "/"
+@using CourseClaimer.Wisedu.Shared.Services
+@attribute [TabItemOption(Text = "Index", Closable = false)]
+@inject EntityManagementService EMS
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, Claimer!</h1>
+
+Welcome to Course Claimer.
+
+<SurveyPrompt Title="How is Blazor working for you?" />

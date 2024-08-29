@@ -1,0 +1,26 @@
+﻿@page "/tableJob"
+@using CourseClaimer.Wisedu.Shared.Models.Database
+@using CourseClaimer.Wisedu.Shared.Services
+@inject EntityManagementService EMS
+
+<Table TItem="JobRecord" IsPagination="true" PageItemsSource="[20,40,100]" class="table-demo"
+       IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="false"
+       ShowToolbar="false" ShowSearch="false" ShowExtendButtons="false"
+       AutoGenerateColumns="true" EditMode="EditMode.Popup" OnQueryAsync="OnQueryAsync">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Id" Ignore="true" />
+    </TableColumns>
+</Table>
+
+@code
+{
+    public async Task<QueryData<JobRecord>> OnQueryAsync(QueryPageOptions options)
+    {
+        var customers = await EMS.Query<JobRecord>(options);
+        return new QueryData<JobRecord>
+            {
+                Items = customers.Data,
+                TotalCount = customers.Total
+            };
+    }
+}

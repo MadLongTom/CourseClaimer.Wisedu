@@ -1,0 +1,92 @@
+﻿@page "/table"
+@using CourseClaimer.Wisedu.Shared.Models.Database
+@using CourseClaimer.Wisedu.Shared.Services
+@inject EntityManagementService EMS
+@inject ClipboardService CS
+@inject SwalService SS
+@inject DialogService DS
+<Button Text="启动所有" IsAsync="true" OnClick="@OnStartClick"></Button>
+<Button Text="停止所有" IsAsync="true" OnClick="@OnStopClick"></Button>
+<Button Text="导出所有用户到JSON" IsAsync="true" OnClick="Export"></Button>
+<Button Text="从JSON导入所有用户" IsAsync="true" OnClick="ToggleModal"></Button>
+<Divider/>
+<Table @ref="table" TItem="Customer" IsPagination="true" PageItemsSource="[20, 40, 100]" class="table-demo"
+       IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="true"
+       ShowToolbar="true" ShowSearch="true" ShowExtendButtons="true" IsExtendButtonsInRowHeader="true" ShowTopPagination="true"
+       AutoGenerateColumns="true" EditMode="EditMode.Popup" OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Id" Ignore="true" />
+        <TableColumn @bind-Field="@context.UserName" Searchable="true"></TableColumn>
+    </TableColumns>
+</Table>
+
+<Modal @ref="ImportModal">
+    <ModalDialog Title="导入数据" ShowSaveButton="true" OnSaveAsync="Import" rows="10">
+        <BodyTemplate>
+            <Textarea @bind-Value="BindJson"></Textarea>
+        </BodyTemplate>
+    </ModalDialog>
+</Modal>
+@code
+{
+    public async Task ToggleModal()
+    { 
+        await ImportModal.Toggle();
+    }
+    public string BindJson { get; set; } = string.Empty;
+    public Modal ImportModal { get; set; }
+    public Table<Customer> table { get; set; }
+    public async Task OnStartClick()
+    {
+        await EMS.WebStartAsync();
+        await table.QueryAsync();
+    }
+    public async Task OnStopClick()
+    {
+        await EMS.StopAsync();
+        await table.QueryAsync();
+    }
+
+    public async Task Export()
+    {
+        var result = await EMS.ExportAllCustomer();
+        await CS.Copy(result.Item1);
+        await SS.Show(new() { Content = $"已复制到剪贴板，文件已保存到{Environment.NewLine}{result.Item2}" });
+    }
+
+    public async Task<bool> Import()
+    {
+        await EMS.AddCustomersFromJson(BindJson);
+        BindJson = string.Empty;
+        await table.QueryAsync();
+        await SS.Show(new() { Content = "已添加" });
+        return true;
+    }
+
+    public async Task<QueryData<Customer>> OnQueryAsync(QueryPageOptions options)
+    {
+        var customers = await EMS.Query<Customer>(options);
+        return new QueryData<Customer>
+            {
+                Items = customers.Data,
+                TotalCount = customers.Total
+            };
+    }
+    public async Task<bool> OnSaveAsync(Customer customer, ItemChangedType type)
+    {
+        switch (type)
+        {
+            case ItemChangedType.Update:
+                await EMS.EditCustomer(customer);
+                break;
+            case ItemChangedType.Add:
+                return await EMS.AddCustomer(customer);
+        }
+        return true;
+    }
+    public async Task<bool> OnDeleteAsync(IEnumerable<Customer> customers)
+    {
+        foreach (var customer in customers) await EMS.DeleteCustomer(customer.UserName);
+        return true;
+    }
+}

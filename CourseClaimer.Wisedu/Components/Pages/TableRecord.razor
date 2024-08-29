@@ -1,0 +1,48 @@
+﻿@page "/tableRecord"
+@using CourseClaimer.Wisedu.Shared.Models.Database
+@using CourseClaimer.Wisedu.Shared.Services
+@inject EntityManagementService EMS
+@inject DownloadService DS
+<Button Text="下载成功记录" OnClick="DownloadFile"></Button>
+<Divider></Divider>
+<Table TItem="ClaimRecord" IsPagination="true" PageItemsSource="[20,40,100]" class="table-demo"
+       IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="false"
+       ShowToolbar="true" ShowSearch="true" ShowExtendButtons="true" IsExtendButtonsInRowHeader="true" ShowTopPagination="true"
+       AutoGenerateColumns="true" EditMode="EditMode.Popup" OnQueryAsync="OnQueryAsync">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Id" Ignore="true" />
+        <TableColumn @bind-Field="@context.UserName" Searchable="true" DefaultSortOrder="SortOrder.Asc"></TableColumn>
+        <TableColumn @bind-Field="@context.Course" Searchable="true"></TableColumn>
+        <TableColumn @bind-Field="@context.Category" Searchable="true"></TableColumn>
+        <TableColumn @bind-Field="@context.IsSuccess" Searchable="true"></TableColumn>
+        <TableColumn @bind-Field="@context.ClaimTime" Searchable="true" DefaultSortOrder="SortOrder.Asc"></TableColumn>
+    </TableColumns>
+</Table>
+
+@code
+{
+    public async Task DownloadFile()
+    {
+        await using var stream = await GenerateFileAsync();
+        await DS.DownloadFromStreamAsync($"claims-{DateTime.Now.ToFileTime()}.json", stream);
+
+        async Task<Stream> GenerateFileAsync()
+        {
+            var ms = new MemoryStream();
+            var writer = new StreamWriter(ms);
+            await writer.WriteAsync(await EMS.ExportAllClaims());
+            await writer.FlushAsync();
+            ms.Position = 0;
+            return ms;
+        }
+    }
+    public async Task<QueryData<ClaimRecord>> OnQueryAsync(QueryPageOptions options)
+    {
+        var customers = await EMS.Query<ClaimRecord>(options);
+        return new QueryData<ClaimRecord>
+        {
+            Items = customers.Data,
+            TotalCount = customers.Total
+        };
+    }
+}

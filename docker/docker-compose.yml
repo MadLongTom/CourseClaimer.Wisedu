@@ -1,0 +1,37 @@
+services:
+  HEUjwqk:
+    image: heujwxk
+    container_name: heujwqk
+    #volumes:
+      #- /docker/jwqk/CourseClaimer.HEU/ClaimerDB.db:/CourseClaimer.HEU/CourseClaimer.HEU/ClaimerDB.db
+      #- /docker/jwqk/appsettings.json:/CourseClaimer.HEU/CourseClaimer.HEU/appsettings.json
+    ports:
+      - 5074:5074
+      - 5075:5075
+      - 8080:8080
+      - 8081:8081
+    restart: 'unless-stopped'
+    environment:
+      - PGSQL=User ID=Erwwyh;Password=PGsql_erw;Host=172.17.0.1;Port=5432;Database=HEUjwqk0;
+      - PGSQL_CAP=User ID=Erwwyh;Password=PGsql_erw;Host=172.17.0.1;Port=5432;Database=HEUjwqk0_CAP;
+      - DBProvider=PostgreSQL
+      - DBProvider_CAP=PostgreSQL
+  PGsql:
+    image: postgres
+    container_name: PGsql
+    ports:
+      - 5432:5432
+    volumes:
+      - /docker/PostgreSQL/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=PGsql_erw
+      - POSTGRES_USER=Erwwyh
+    restart: 'unless-stopped'
+  PGadmin:
+    image: dpage/pgadmin4
+    container_name: PGadmin
+    ports:
+      - 5433:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=test@123.com
+      - PGADMIN_DEFAULT_PASSWORD=123456

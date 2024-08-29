@@ -1,0 +1,23 @@
+﻿@page "/tableRow"
+@using CourseClaimer.Wisedu.Shared.Dto
+@using CourseClaimer.Wisedu.Shared.Services
+@inject EntityManagementService EMS
+
+<Table TItem="RowDto" IsPagination="true" PageItemsSource="[20,40,100]" class="table-demo"
+       IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="false"
+       ShowToolbar="true" ShowSearch="true" ShowExtendButtons="false"
+       AutoGenerateColumns="true" EditMode="EditMode.Popup" OnQueryAsync="OnQueryAsync">
+</Table>
+
+@code
+{
+    public async Task<QueryData<RowDto>> OnQueryAsync(QueryPageOptions options)
+    {
+        var customers = await EMS.QueryRow(options);
+        return new QueryData<RowDto>
+        {
+            Items = customers.Data,
+            TotalCount = customers.Total
+        };
+    }
+}
